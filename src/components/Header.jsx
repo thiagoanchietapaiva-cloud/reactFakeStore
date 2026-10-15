@@ -12,15 +12,20 @@ const Header = ({
 
   return (
     <header className="flex items-center justify-between px-10 py-4 bg-green-400 sticky top-0 z-40">
+      <div className="flex font-bold text-3xl text-white tracking-wide px-4 py-1">  
+      <box-icon type='solid' name='home' color='white' size='md'></box-icon>
+      Loja
+      </div>
       <div className="flex gap-2 items-center relative">
+
         <input
           type="text"
           onChange={(e) => buscarProdutosPorNome(e.target.value)}
           placeholder="Pesquisar..."
           className="w-80 h-10 rounded bg-white pl-4 outline-none text-black"
         />
-        <button onClick={onAbrirCarrinho} className="bg-white px-4 py-2 rounded font-bold">
-           {carrinho.length}
+        <button onClick={onAbrirCarrinho} className="bg-white px-4 h-10 rounded font-bold flex items-center justify-center">
+        <box-icon name='cart'></box-icon> {carrinho.length}
         </button>
 
         {mostrarCarrinho && (
@@ -61,4 +66,5 @@ const Header = ({
     </header>
   );
 };
+
 export default Header;
