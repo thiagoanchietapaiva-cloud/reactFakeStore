@@ -8,7 +8,8 @@ const App = () => {
   const [categoriaAtiva, setCategoriaAtiva] = useState("All");
   const [ordenacaoAtiva, setOrdenacaoAtiva] = useState("");
   const [termoBusca, setTermoBusca] = useState("");
-  const [carrinho, setCarrinho] = useState([]); // AGORA EXISTE
+  const [carrinho, setCarrinho] = useState([]);
+  const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
 
   function buscarProdutos() {
     fetch("https://fakestoreapi.com/products")
@@ -19,23 +20,26 @@ const App = () => {
       });
   }
 
-  function filtrarProdutos(categoria) {
-    setCategoriaAtiva(categoria);
-  }
-  function ordenarProdutos(tipo) {
-    setOrdenacaoAtiva(tipo);
-  }
-  function buscarProdutosPorNome(termo) {
-    setTermoBusca(termo);
-  }
+  const filtrarProdutos = (cat) => setCategoriaAtiva(cat);
+  const ordenarProdutos = (tipo) => setOrdenacaoAtiva(tipo);
+  const buscarProdutosPorNome = (termo) => setTermoBusca(termo);
+
+  const adicionarAoCarrinho = (produto) => {
+    if (carrinho.find((item) => item.id === produto.id)) return;
+    setCarrinho([...carrinho, produto]);
+  };
+
+  const removerDoCarrinho = (id) => {
+    setCarrinho(carrinho.filter((item) => item.id !== id));
+  };
 
   useEffect(() => {
     let lista = [...produtos];
     if (categoriaAtiva !== "All" && categoriaAtiva !== "") {
-      lista = lista.filter(p => p.category === categoriaAtiva);
+      lista = lista.filter((p) => p.category === categoriaAtiva);
     }
     if (termoBusca !== "") {
-      lista = lista.filter(p => p.title.toLowerCase().includes(termoBusca.toLowerCase()));
+      lista = lista.filter((p) => p.title.toLowerCase().includes(termoBusca.toLowerCase()));
     }
     if (ordenacaoAtiva === "preco") lista.sort((a, b) => a.price - b.price);
     if (ordenacaoAtiva === "nota") lista.sort((a, b) => b.rating.rate - a.rating.rate);
@@ -50,19 +54,16 @@ const App = () => {
         filtrarProdutos={filtrarProdutos}
         ordenarProdutos={ordenarProdutos}
         buscarProdutosPorNome={buscarProdutosPorNome}
-        quantidadeCarrinho={carrinho.length}
+        carrinho={carrinho}
+        mostrarCarrinho={mostrarCarrinho}
+        onAbrirCarrinho={() => setMostrarCarrinho(!mostrarCarrinho)}
+        onFecharCarrinho={() => setMostrarCarrinho(false)}
+        onRemover={removerDoCarrinho}
       />
-      <main className="p-15 bg-slate-200 min-h-screen">
-        <div className="grid grid-cols-4 gap-4">
-          {produtosExibidos.map(produto => (
-            <Cards
-              key={produto.id}
-              title={produto.title}
-              image={produto.image}
-              category={produto.category}
-              price={produto.price}
-              rate={produto.rating.rate}
-            />
+      <main className="p-8 bg-slate-200 min-h-screen">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {produtosExibidos.map((produto) => (
+            <Cards key={produto.id} produto={produto} onAdicionar={adicionarAoCarrinho} />
           ))}
         </div>
       </main>
