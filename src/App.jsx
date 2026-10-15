@@ -60,7 +60,7 @@ const App = () => {
         onFecharCarrinho={() => setMostrarCarrinho(false)}
         onRemover={removerDoCarrinho}
       />
-      <main className="p-8 bg-slate-200 min-h-screen">
+      <main className="p-8 lg:p-15 bg-slate-200 min-h-screen">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {produtosExibidos.map((produto) => (
             <Cards key={produto.id} produto={produto} onAdicionar={adicionarAoCarrinho} />
